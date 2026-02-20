@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+import numpy as np
 
 def clean_salary(salary_str):
     if pd.isna(salary_str):
@@ -73,3 +74,28 @@ def extract_role(title):
     
     else:
         return "other"
+
+
+# remplacer les valeurs du Revenue par la mediane
+
+def clean_revenue(value):
+    if not isinstance(value, str):
+        return np.nan
+
+    if "Unknown" in value or "Non-Applicable" in value:
+        return np.nan
+
+    value = value.lower()
+
+    numbers = re.findall(r"[\d\.]+", value)
+
+    if len(numbers) == 2:
+        low, high = map(float, numbers)
+
+        if "billion" in value:
+            low *= 1000
+            high *= 1000
+
+        return (low + high) / 2
+
+    return np.nan

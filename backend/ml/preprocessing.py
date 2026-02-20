@@ -51,3 +51,25 @@ def extract_seniority(title):
         return "Mid"
     
 
+
+# regroupement des roles 
+
+def extract_role(title):
+
+    if not isinstance(title, str):
+        return "Other"
+
+    if "data scientist" in title:
+        return "Data Scientist"
+    
+    elif "data analyst" in title:
+        return "Data Analyst"
+    
+    elif "machine learning" in title:
+        return "ML Engineer"
+    
+    elif "data engineer" in title:
+        return "Data Engineer"
+    
+    else:
+        return "other"

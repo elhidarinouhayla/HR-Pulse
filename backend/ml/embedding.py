@@ -1,6 +1,8 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import chromadb
+from chromadb.config import Settings
+
 
 
 def load_embedding_model():
@@ -24,23 +26,34 @@ def normalize_embeddings(embeddings):
 
 
 
-# def insexation_chroma(embeddings, df, collection_name="tickets_embeddings", batch_size=5000):
+def save_chroma(
+          df,
+    texts,
+    embeddings,
+    ids,
+    collection_name="job_descriptions",
+    persist_directory="../data/chromadb/chroma_db"
+):
+    
+    client = chromadb.Client(
+        Settings(
+            persist_directory=persist_directory,
+            anonymized_telemetry=False
+        )
+    )
 
-#     client = chromadb.Client()
-#     collection = client.create_collection(collection_name)
+    collection = client.get_or_create_collection(
+        name=collection_name,
+        metadata={"hnsw:space": "cosine"}
+    )
 
-#     ids = [str(i) for i in df.index]
-#     embeddings_list = embeddings.tolist()
-#     metadatas = df[['type', 'queue', 'priority', 'language', 'tag_1', 'tag_2', 'tag_3', 'tag_4']].to_dict(orient='records')
+    collection.add(
+        ids=ids,
+        documents=texts,
+        embeddings=embeddings.tolist(),
+        metadatas=df.to_dict(orient="records")
+    )
 
+    client.persist()
 
-#     total = len(ids)
-#     for i in range(0, total, batch_size):
-#         end = min(i + batch_size, total)
-        
-#         collection.add(
-#             ids=ids[i:end],
-#             embeddings=embeddings_list[i:end],
-#             metadatas=metadatas[i:end]
-#         )
-#     return collection
+   

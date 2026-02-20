@@ -30,3 +30,24 @@ def job_title(title):
 
     return title
 
+
+
+# extraire le niveau d’experience
+
+def extract_seniority(title):
+
+    if not isinstance(title, str):
+        return "Mid"
+    
+    if "senior" in title or "sr" in title:
+        return "Senior"
+    elif "junior" in title or "jr" in title:
+        return "Junior"
+    elif "lead" in title:
+        return "Lead"
+    elif "principal" in title:
+        return "Principal"
+    else:
+        return "Mid"
+    
+

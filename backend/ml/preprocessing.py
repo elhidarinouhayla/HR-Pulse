@@ -16,3 +16,17 @@ def clean_salary(salary_str):
         return ((low + high) / 2) * 1000
 
     return None
+
+
+
+
+# nettoyage du texte
+
+def job_title(title):
+
+    title = title.lower()
+    title = re.sub(r'[^a-zA-Z ]', '', title)  # enlever chiffres et symboles
+    title = title.strip()
+
+    return title
+

@@ -50,7 +50,7 @@ def save_chroma(
         ids=ids,
         documents=texts,
         embeddings=embeddings.tolist(),
-        metadatas=df[['role', 'salary_clean', 'Rating', 'company_name', 'location', 'Headquarters', 'Size', 'founded', 'Type of ownership', 'Industry', 'Sector', 'revenue_clean', 'competitors']].to_dict(orient='records')
+        metadatas=df[['role', 'salary_clean', 'Rating', 'company_name', 'location', 'Headquarters', 'Size', 'founded', 'Type of ownership', 'Industry', 'Sector', 'revenue', 'competitors']].to_dict(orient='records')
     )
 
     return client

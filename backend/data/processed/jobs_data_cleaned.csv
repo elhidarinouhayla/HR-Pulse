@@ -1,4 +1,4 @@
-role,salary_clean,Job Description,Rating,company_name,location,Headquarters,size,founded,Type of ownership,Industry,Sector,revenue_clean,competitors
+role,salary_clean,Job Description,Rating,company_name,location,Headquarters,size,founded,Type of ownership,Industry,Sector,revenue,competitors
 Data Scientist,154000.0,"Description
 
 The Senior Data Scientist is responsible for defining, building, and improving statistical models to improve business processes and outcomes in one or more healthcare domains such as Clinical, Enrollment, Claims, and Finance. As part of the broader analytics team, Data Scientist will gather and analyze data to solve and address complex business problems and evaluate scenarios to make predictions on future outcomes and work with the business to communicate and support decision-making. This position requires strong analytical skills and experience in analytic methods including multivariate regressions, hierarchical linear models, regression trees, clustering methods and other complex statistical techniques.

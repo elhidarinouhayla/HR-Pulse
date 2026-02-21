@@ -76,6 +76,20 @@ def extract_role(title):
         return "other"
 
 
+def clean_size(x):
+    if x == "-1" or pd.isna(x):
+        return np.nan
+    
+    nums = re.findall(r'\d+', str(x))
+    
+    if len(nums) == 2:
+        return (int(nums[0]) + int(nums[1])) / 2
+    elif len(nums) == 1:
+        return int(nums[0])
+    else:
+        return np.nan
+    
+    
 # remplacer les valeurs du Revenue par la mediane
 
 def clean_revenue(value):
@@ -99,3 +113,5 @@ def clean_revenue(value):
         return (low + high) / 2
 
     return np.nan
+
+

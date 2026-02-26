@@ -1,0 +1,7 @@
+[project]
+name = "hr-pulse-frontend"
+version = "0.1.0"
+dependencies = [
+    "streamlit",
+    "requests"
+]

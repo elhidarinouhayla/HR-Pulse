@@ -76,42 +76,79 @@ def extract_role(title):
         return "other"
 
 
-def clean_size(x):
-    if x == "-1" or pd.isna(x):
-        return np.nan
+
+def categorize_ownership(ownership):
+    if ownership in ["-1", "Unknown", "Other Organization"]:
+        return "Unknown"
     
-    nums = re.findall(r'\d+', str(x))
+    if "Private" in ownership or "Subsidiary" in ownership:
+        return "Private"
     
-    if len(nums) == 2:
-        return (int(nums[0]) + int(nums[1])) / 2
-    elif len(nums) == 1:
-        return int(nums[0])
-    else:
-        return np.nan
+    if "Public" in ownership:
+        return "Public"
+    
+    if "Nonprofit" in ownership:
+        return "Nonprofit"
+    
+    if "Government" in ownership:
+        return "Government"
+    
+    if "College" in ownership:
+        return "Education"
+    
+    if "Hospital" in ownership:
+        return "Healthcare"
+    
+    if ownership in ["Self-employed", "Contract"]:
+        return "Self-employed"
+    
+    return "Unknown"
+
+
+
+# regrouper Size en categories
+
+def categorize_size(size):
+    if size in ["Unknown", "-1"]:
+        return "Unknown"
+    
+    if "1 to 50" in size or "51 to 200" in size:
+        return "Small"
+    
+    if "201 to 500" in size or "501 to 1000" in size:
+        return "Medium"
+    
+    if "1001 to 5000" in size:
+        return "Large"
+    
+    if "5001 to 10000" in size or "10000+" in size:
+        return "Enterprise"
+    
+    return "Unknown"
     
     
-# remplacer les valeurs du Revenue par la mediane
+# transformer Revenue en categorie
 
-def clean_revenue(value):
-    if not isinstance(value, str):
-        return np.nan
-
-    if "Unknown" in value or "Non-Applicable" in value:
-        return np.nan
-
-    value = value.lower()
-
-    numbers = re.findall(r"[\d\.]+", value)
-
-    if len(numbers) == 2:
-        low, high = map(float, numbers)
-
-        if "billion" in value:
-            low *= 1000
-            high *= 1000
-
-        return (low + high) / 2
-
-    return np.nan
-
-
+def categorize_revenue(revenue):
+    if revenue in ["Unknown / Non-Applicable", "-1"]:
+        return "Unknown"
+    
+    if "Less than $1 million" in revenue:
+        return "Very Small"
+    
+    if "$1 to $5 million" in revenue:
+        return "Very Small"
+    
+    if "$5 to $50 million" in revenue:
+        return "Small"
+    
+    if "$50 to $500 million" in revenue:
+        return "Medium"
+    
+    if "$500 million to $1 billion" in revenue:
+        return "Large"
+    
+    if "billion" in revenue:
+        return "Enterprise"
+    
+    return "Unknown"

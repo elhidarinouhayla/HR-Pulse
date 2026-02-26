@@ -3,6 +3,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
+from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.metrics import r2_score, mean_absolute_error,mean_squared_error
 
 
@@ -13,14 +14,18 @@ def split_data(df_clean, target='salary_clean', test_size=0.2):
     x = df_clean.drop(columns=[target])
     y = df_clean[target]
 
-    x_train, y_train, x_test, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y,
+        test_size=test_size,
+        random_state=42
+    )
 
-    return x_train, y_train, x_test, y_test
+    return x_train, x_test, y_train, y_test
 
 
 # realisation du pipeline sklearn
 
-def pipeline(numerical_cols, categorical_cols, model):
+def pipeline(categorical_cols, model, k_best=5):
 
     numeric_transform = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="median")),
@@ -34,7 +39,6 @@ def pipeline(numerical_cols, categorical_cols, model):
 
     preprocessor = ColumnTransformer(
         transformers=[
-            ("num", numeric_transform, numerical_cols),
             ("cat", categorical_transform, categorical_cols)
         ]
     )
@@ -42,6 +46,7 @@ def pipeline(numerical_cols, categorical_cols, model):
     return Pipeline(
         steps=[
             ("preprocessor", preprocessor),
+            ("feature_selection", SelectKBest(score_func=f_regression, k=k_best)),
             ("model", model)
         ]
     )
@@ -53,7 +58,7 @@ def metric_model(y_test, y_pred):
 
     r2 = r2_score(y_test, y_pred)
     mae = mean_absolute_error(y_test, y_pred)
-    mse = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
 
     return r2, mae, mse
 

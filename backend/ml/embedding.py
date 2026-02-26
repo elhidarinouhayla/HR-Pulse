@@ -25,32 +25,3 @@ def normalize_embeddings(embeddings):
     return embeddings_nor
 
 
-def save_chroma(
-    df,
-    embeddings,
-    collection_name="job_descriptions",
-    
-):
-
-
-    texts = df["Job Description"].fillna("").tolist()
-    ids = [str(i) for i in df.index]
-
-    
-    client = chromadb.PersistentClient(
-    path="../data/chromadb/chroma_db"
-)
-    
-
-    collection = client.get_or_create_collection(
-    name=collection_name
-        )
-
-    collection.add(
-        ids=ids,
-        documents=texts,
-        embeddings=embeddings.tolist(),
-        metadatas=df[['role', 'salary_clean', 'Rating', 'company_name', 'location', 'Headquarters', 'Size', 'founded', 'Type of ownership', 'Industry', 'Sector', 'revenue', 'competitors']].to_dict(orient='records')
-    )
-
-    return client

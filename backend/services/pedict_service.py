@@ -1,12 +1,20 @@
 import joblib
+from pathlib import Path
+import pandas as pd
 
-def load_model():
-    model = joblib.load("../ml/training_models/predict_model.pkl")
 
 
-def predict_salary(df):
-    model = load_model()
-    prediction = model.predict([df])
-    result = prediction[0]
-    
-    return result
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+MODEL_PATH = BASE_DIR / "ml" / "training_models" / "predict_model.pkl"
+
+model = joblib.load(MODEL_PATH)
+
+
+def predict_salary(features):
+
+    X = pd.DataFrame([features])
+    prediction = model.predict(X)[0]
+
+    return float(prediction)

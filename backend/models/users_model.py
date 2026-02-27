@@ -1,9 +1,14 @@
-from sqlalchemy import Column, Integer, String, Text
 from backend.database import Base
+from sqlalchemy import String, Integer, Column, DateTime
+from datetime import datetime
 
-class JobOffer(Base):
-    __tablename__ = "job_offers"
+
+
+class User(Base):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    role = Column(String, nullable=False)
-    skills_extracted = Column(Text, nullable=False)  
+    username = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    create_at = Column(DateTime, default=datetime.now)

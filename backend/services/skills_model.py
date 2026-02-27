@@ -4,7 +4,7 @@ import pandas as pd
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 from tqdm import tqdm
-from config import ENDPOINT, KEY
+from backend.config import ENDPOINT, KEY
 
 
 def authenticate_client():

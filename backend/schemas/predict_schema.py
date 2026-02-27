@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class UserRequest(BaseModel):
+class PredictRequest(BaseModel):
 
     JobDescription: str
     location: str
@@ -12,5 +12,5 @@ class UserRequest(BaseModel):
         
 
 
-class UserResponse(BaseModel):
+class PredictResponse(BaseModel):
     salary : float

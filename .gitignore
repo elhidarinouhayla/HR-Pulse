@@ -39,4 +39,4 @@ infra/.terraform.lock.hcl
 .pytest_cache/
 
 
-infra/
+infra/testdb.py

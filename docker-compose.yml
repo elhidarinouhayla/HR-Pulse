@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  # eervice FastAPI (backend avec uv)
+  # FastAPI (backend avec uv)
   app:
     build: .
     ports:

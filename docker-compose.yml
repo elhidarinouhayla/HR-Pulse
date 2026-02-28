@@ -1,27 +1,27 @@
 version: "3.9"
 
 services:
-
-  backend:
-    build:
-      context: .
-      dockerfile: dockerfile
-    container_name: hrpulse-backend
+  # eervice FastAPI (backend avec uv)
+  app:
+    build: .
+    ports:
+      - "8001:8000"
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
     env_file:
       - .env
-    ports:
-      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
+  # service Frontend Next.js
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/dockerfile
-    container_name: hrpulse-frontend
+    build: ../HR-Pulse-frontend
     ports:
-      - "8501:8501"
-
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "16686:16686"
-      - "4317:4317"
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - app
+    environment:
+      NEXT_PUBLIC_API_URL: "http://app:8000"

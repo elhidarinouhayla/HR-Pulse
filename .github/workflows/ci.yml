@@ -2,7 +2,9 @@ name: HR-Pulse CI
 
 on:
   push:
-    branches:  main 
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
 
@@ -27,6 +29,8 @@ jobs:
       - name: Install deps
         run: uv sync
       - name: Run Tests
+        env:
+          PYTHONPATH: .
         run: uv run pytest
 
   build:
@@ -35,6 +39,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Backend Image
-        run: docker build -t hrpulse-backend ./backend
-      - name: Build Frontend Image
-        run: docker build -t hrpulse-frontend ./frontend
+        run: docker build -t hrpulse-backend .
+     

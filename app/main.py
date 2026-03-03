@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from app.services.pedict_service import predict_salary
+from app.services.predict_service import predict_salary
 from app.schemas.predict_schema import PredictRequest, PredictResponse
 from app.database import Base, engine, get_db
 from app.models import jobs_model, users_model
@@ -12,14 +12,16 @@ from typing import List
 from app.services.extract_skills import get_all_skills, get_jobs_by_skill
 from fastapi.middleware.cors import CORSMiddleware
 from app.models.jobs_model import JobOffer
-import json
 
-
+from app.telemetry import setup_telemetry
 
 Base.metadata.create_all(bind=engine)
 
-
 app = FastAPI()
+
+# setup Telemetry
+setup_telemetry(app, engine)
+
 
 
 app.add_middleware(
@@ -81,23 +83,6 @@ def predict(data: PredictRequest):
 
     return {"salary": salary}
 
-
-# #  extract skills
-# @app.post("/extract_skills", response_model=JobResponse)
-# def extract_skills_endpoint(
-#     request: JobRequest,
-#     db: Session = Depends(get_db)
-# ):
-#     skills = extract_skills(request.job_description, db)
-#     print(skills)
-#     job = JobOffer(
-#         role="Unknown",
-#         skills_extracted=json.dumps(skills)
-#     )
-#     db.add(job)
-#     db.commit()
-
-#     return JobResponse(skills=skills)
 
 
 # skills list

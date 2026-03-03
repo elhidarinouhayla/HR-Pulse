@@ -1,7 +1,15 @@
 version: "3.9"
 
 services:
-  # FastAPI (backend avec uv)
+  # Jaeger : L'outil de visualisation des traces
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # Interface UI
+      - "4317:4317"  # OTLP gRPC endpoint
+      - "4318:4318"  # OTLP HTTP endpoint
+
+  # FastAPI
   app:
     build: .
     ports:
@@ -9,15 +17,20 @@ services:
     restart: always
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+      OTEL_SERVICE_NAME: "hr-pulse-backend"
     env_file:
       - .env
+    depends_on:
+      - jaeger
     volumes:
       - .:/app
     command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-  # service Frontend Next.js
+  # service frontend 
   frontend:
     build: ../HR-Pulse-frontend
+
     ports:
       - "3000:3000"
     restart: always

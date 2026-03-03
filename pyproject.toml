@@ -18,7 +18,10 @@ dependencies = [
     "opentelemetry-exporter-otlp>=1.15.0",
     "opentelemetry-instrumentation-fastapi>=0.60b1",
     "opentelemetry-instrumentation-sqlalchemy>=0.60b1",
+    "opentelemetry-instrumentation-requests>=0.60b1",
     "opentelemetry-sdk>=1.39.1",
+
+
     "pandas>=3.0.1",
     "passlib[bcrypt]>=1.7.4",
     "pyodbc>=5.3.0",

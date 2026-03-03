@@ -1,61 +1,50 @@
 import json
 import sys
 from pathlib import Path
+import pandas as pd
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-import pandas as pd
 from app.database import SessionLocal
 from app.models.jobs_model import JobOffer
 
 
-def seed_skills_from_csv(csv_path: str):
+def seed_skills_from_csv(csv_path):
     db = SessionLocal()
 
-    try:
-        df = pd.read_csv(csv_path)
-        print(f"✓ CSV chargé : {len(df)} lignes")
-        print(f"✓ Colonnes : {df.columns.tolist()}")
+    # lire CSV
+    df = pd.read_csv(csv_path)
 
-        count = 0
-        errors = 0
+    for _, row in df.iterrows():
 
-        for _, row in df.iterrows():
-            try:
-                # extraire le role
-                role = str(row["role"]).strip() if pd.notna(row["role"]) else "Unknown"
+        # recuperer le role
+        role = row["role"]
+        if pd.isna(role):
+            role = "Unknown"
+        else:
+            role = str(role).strip()
 
-                # extraire les skills
-                raw_skills = row["extracted_skills"]
-                if pd.isna(raw_skills):
-                    continue
+        # Recuperer les skills
+        raw_skills = row["extracted_skills"]
 
-                skills_list = json.loads(str(raw_skills).replace("'", '"'))
+        if pd.isna(raw_skills):
+            continue
 
-                if not skills_list:
-                    continue
+        skills_list = json.loads(str(raw_skills).replace("'", '"'))
 
-                job = JobOffer(
-                    role=role,
-                    skills_extracted=json.dumps(skills_list)
-                )
-                db.add(job)
-                count += 1
+        if len(skills_list) == 0:
+            continue
 
-            except Exception as e:
-                errors += 1
-                continue
+        job = JobOffer(
+            role=role,
+            skills_extracted=json.dumps(skills_list)
+        )
 
-        db.commit()
-        print(f"✓ {count} entrées insérées en DB")
-        if errors:
-            print(f" {errors} lignes ignorées (erreur parsing)")
+        db.add(job)
 
-    except Exception as e:
-        db.rollback()
-        print(f" Erreur : {e}")
-    finally:
-        db.close()
+  
+    db.commit()
+    db.close()
 
 
 if __name__ == "__main__":

@@ -1,40 +1,51 @@
-version: "3.9"
-
 services:
   # Jaeger : L'outil de visualisation des traces
   jaeger:
     image: jaegertracing/all-in-one:latest
+    container_name: jaeger
     ports:
       - "16686:16686" # Interface UI
-      - "4317:4317"  # OTLP gRPC endpoint
-      - "4318:4318"  # OTLP HTTP endpoint
+      - "4317:4317"   # OTLP gRPC endpoint
+      - "4318:4318"   # OTLP HTTP endpoint
+      - "14268:14268" # jaeger.thrift over HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
 
-  # FastAPI
+  # FastAPI Backend
   app:
-    build: .
+    build: 
+      context: .
+      dockerfile: dockerfile
+    container_name: hr-pulse-backend
     ports:
-      - "8001:8000"
+      - "8000:8000"
     restart: always
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
-      OTEL_SERVICE_NAME: "hr-pulse-backend"
+      - DATABASE_URL=${DATABASE_URL}
+      - AZURE_AI_ENDPOINT=${AZURE_AI_ENDPOINT}
+      - AZURE_AI_KEY=${AZURE_AI_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_SERVICE_NAME=hr-pulse-backend
     env_file:
       - .env
     depends_on:
       - jaeger
     volumes:
       - .:/app
-    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-  # service frontend 
+  # Next.js Frontend
   frontend:
-    build: ../HR-Pulse-frontend
-
+    build:
+      context: ../HR-Pulse-frontend/frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    container_name: hr-pulse-frontend
     ports:
       - "3000:3000"
     restart: always
     depends_on:
       - app
     environment:
-      NEXT_PUBLIC_API_URL: "http://app:8000"
+      - NEXT_PUBLIC_API_URL=http://localhost:8000

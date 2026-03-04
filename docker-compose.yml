@@ -1,16 +1,5 @@
 services:
-  # Jaeger : L'outil de visualisation des traces
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: jaeger
-    ports:
-      - "16686:16686" # Interface UI
-      - "4317:4317"   # OTLP gRPC endpoint
-      - "4318:4318"   # OTLP HTTP endpoint
-      - "14268:14268" # jaeger.thrift over HTTP
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-
+  
   # FastAPI Backend
   app:
     build: 
@@ -28,7 +17,7 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
       - OTEL_SERVICE_NAME=hr-pulse-backend
     env_file:
-      - .env
+      - app/.env
     depends_on:
       - jaeger
     volumes:
@@ -49,3 +38,13 @@ services:
       - app
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+
+
+
+    # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317" 

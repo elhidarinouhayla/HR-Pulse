@@ -18,7 +18,7 @@ def extract_skills(data_path, output_path, limit=100):
     # connexion a azure
     client = create_client()
 
-    # Llre le fichier CSV
+    # lire le fichier CSV
     df = pd.read_csv(data_path)
 
     # prendre seulement les premieres lignes 
@@ -26,13 +26,13 @@ def extract_skills(data_path, output_path, limit=100):
 
     extracted_skills_list = []
 
-    # Parcourir chaque ligne
+    # parcourir chaque ligne
     for index, row in df.iterrows():
 
-        # Récupérer la description du job
+        # recuperer la description du job
         description = str(row["Job Description"])[:1000]
 
-        # Envoyer à Azure NER
+        # envoyer a Azure NER
         response = client.recognize_entities([description])
         document = response[0]
 
@@ -44,7 +44,7 @@ def extract_skills(data_path, output_path, limit=100):
             for entity in document.entities:
 
                 # Garder seulement Skill et Product
-                if entity.category == "Skill" or entity.category == "Product":
+                if entity.category == "Skill":
                     skills.append(entity.text)
 
         # supprimer les doublons

@@ -18,10 +18,4 @@ def generate_embedding(model, texts):
 
 
 
-def normalize_embeddings(embeddings):
-
-    embeddings_nor = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
-
-    return embeddings_nor
-
 
